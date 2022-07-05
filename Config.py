@@ -1,0 +1,6 @@
+DATABASE_NAME = ""
+DATABASE_USER = ""
+BUILDINGS_FILE_PATH = "buildings.json"
+SMTP_SERVER = "smtp.mail.yahoo.com"
+SMTP_LOGIN = ""
+SMTP_PASSWORD = ""
