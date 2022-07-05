@@ -4,3 +4,10 @@ This is a program that allows a receptionist to check in and out packages receiv
 
 
 Built in Python with a Tkinter GUI on top of a MySQL database it also supports an audit feature showing all actions taken on a package and notifies residents by email on every action. 
+
+
+![UI](./images/CaptureAdd.PNG)
+
+![UI](./images/CaptureCheck.PNG)
+
+![UI](./images/CaptureAudit.PNG)
