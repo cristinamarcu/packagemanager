@@ -12,10 +12,13 @@ class ApartmentInfo(NamedTuple):
 class BuildingManager:
     buildingDict = {}
 
-    def __init__(self):
-        buildingjson = open(BUILDINGS_FILE_PATH)
-        content = buildingjson.read()
-        self.buildingDict = json.loads(content)
+    # TODO make a testBuildingManager.py
+    # that uses this init with different json datas for different test cases
+    def __init__(self, jsonData=None):
+        if not jsonData:
+            buildingjson = open(BUILDINGS_FILE_PATH)
+            jsonData = buildingjson.read()
+        self.buildingDict = json.loads(jsonData)
 
     def getBuildings(self) -> list:
         return list(self.buildingDict.keys())

@@ -43,7 +43,6 @@ descript = tk.StringVar()
 description = ttk.Entry(tab1, textvariable=descript, width=50)
 description.grid(row=6, column=25)
 
-
 selected_buildingtab1 = tk.StringVar()
 
 
@@ -73,15 +72,23 @@ def enter_clicked(descr: str):
                               str(uuid.uuid1().int))
     packageManager.addPackage(item)
     itemHistory = DescriptionPackageHistory(item, "RECEIVED")
-    infoapart = buildingManager.getApartmentInfo(item.building, item.apartment)
-    validreceived=send_notification(infoapart.email, item.apartment, infoapart.name, item.description, item.date, itemHistory.action)
-    if validreceived==False:
-        result_label_received = ttk.Label(tab1, text='Notification not sent. No internet connection')
-        result_label_received.grid(row=30, column=1)
 
+    infoapart = buildingManager.getApartmentInfo(item.building, item.apartment)
+    validreceived = send_notification(infoapart.email, item.apartment, infoapart.name, item.description, item.date,
+                                      itemHistory.action)
+    if validreceived == False:
+        result_label_textreceived = 'Notification not sent. No internet connection'
+        result_label_received.configure(text=result_label_textreceived)
+        logging.error("Couldn't sent email.No internet connection.")
+    else:
+        logging.info('Notification sent.')
+    logging.info(f'A package for the building {item.building},apartment {item.apartment} was received on {item.date}')
     audit.addToHistory(itemHistory)
     description.delete(0, 'end')
 
+
+result_label_received = ttk.Label(tab1)
+result_label_received.grid(row=30, column=1)
 
 description.bind('<Return>', enter_clicked)
 
@@ -152,13 +159,10 @@ def checkpackageclicked():
         elemlist.append([package.date, package.description, package.id])
     for elem in elemlist:
         listpackage.insert('', tk.END, values=[elem[0], elem[1], elem[2]])
-        print(elem[2])
 
 
 def getItem() -> list:
     for selected_item in listpackage.selection():
-        print(selected_item)
-        print(listpackage.item(selected_item))
         selected_id = str(listpackage.item(selected_item)["values"][2])
         listpackage.delete(selected_item)
         item = packageManager.getPackage(selected_id)
@@ -170,12 +174,17 @@ def delete_button_clicked():
     itemHistory = DescriptionPackageHistory(item[0], 'PICKED_UP')
     audit.addToHistory(itemHistory)
     infoapartpicked = buildingManager.getApartmentInfo(item[0].building, item[0].apartment)
-    validPicked=send_notification(infoapartpicked.email, item[0].apartment, infoapartpicked.name, item[0].description, item[0].date,
-                      itemHistory.action)
-    if validPicked==False:
-        result_label_picked = ttk.Label(tab2,text='Notification not sent. No internet connection')
-        result_label_picked.grid(rowspan=25, columnspan=10)
-
+    validPicked = send_notification(infoapartpicked.email, item[0].apartment, infoapartpicked.name, item[0].description,
+                                    item[0].date,
+                                    itemHistory.action)
+    if validPicked == False:
+        result_label_textpicked = 'Notification not sent. No internet connection'
+        result_label.configure(text=result_label_textpicked)
+        logging.error("Couldn't sent email.No internet connection.")
+    else:
+        logging.info('Notification sent.')
+    logging.info(
+        f'The package {item[0].description} for the building {item[0].building},apartment {item[0].apartment} was picked up on {item[0].date}')
     packageManager.deletePackage(item[1])
 
 
@@ -184,13 +193,20 @@ def return_button_clicked():
     itemHistory = DescriptionPackageHistory(item[0], 'RETURNED')
     audit.addToHistory(itemHistory)
     infoapartreturned = buildingManager.getApartmentInfo(item[0].building, item[0].apartment)
-    validReturned=send_notification(infoapartreturned.email, item[0].apartment, infoapartreturned.name, item[0].description,
-                      item[0].date, itemHistory.action)
-    if validReturned==False:
-        result_label_returned = ttk.Label(tab2,text='Notification not sent. No internet connection')
-        result_label_returned.grid(rowspan=25, columnspan=10)
+    validReturned = send_notification(infoapartreturned.email, item[0].apartment, infoapartreturned.name,
+                                      item[0].description,
+                                      item[0].date, itemHistory.action)
+    if validReturned == False:
+        result_label_textreturned = 'Notification not sent. No internet connection'
+        result_label.configure(text=result_label_textreturned)
+        logging.error("Couldn't sent email.No internet connection.")
+    logging.info(
+        f'The package {item[0].description} for the building {item[0].building},apartment {item[0].apartment} was returned on {item[0].date}.')
     packageManager.deletePackage(item[1])
 
+
+result_label = ttk.Label(tab2)
+result_label.grid(rowspan=25, columnspan=10)
 
 gobuttontab2.configure(command=checkpackageclicked)
 deletebutton.configure(command=delete_button_clicked)

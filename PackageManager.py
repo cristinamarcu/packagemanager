@@ -1,6 +1,7 @@
 from typing import NamedTuple
 import mysql.connector
 from Config import DATABASE_USER, DATABASE_NAME
+import logging
 
 
 class DescriptionPackage(NamedTuple):
@@ -12,9 +13,10 @@ class DescriptionPackage(NamedTuple):
 
 
 class PackageManager:
-    infoList = []
+
 
     def __init__(self):
+        self.infoList = []
         mydb = mysql.connector.connect(user=DATABASE_USER, database=DATABASE_NAME)
         cursor = mydb.cursor()
         query = "SELECT building,apartment,date,description,id FROM packages"
@@ -26,6 +28,7 @@ class PackageManager:
 
     def addPackage(self, package: DescriptionPackage):
         self.infoList.append(package)
+        print(len(self.infoList))
         print(self.infoList)
         mydb = mysql.connector.connect(user=DATABASE_USER, database=DATABASE_NAME)
         cursor = mydb.cursor()
@@ -36,6 +39,7 @@ class PackageManager:
         cursor.execute(add_package,
                        (package.building, package.apartment, package.date, package.description, package.id))
         mydb.commit()
+        logging.info(f'The package {package.id} was added to the database.')
         cursor.close()
         mydb.close()
 
@@ -44,6 +48,8 @@ class PackageManager:
         for package in self.infoList:
             if package.building == Building and package.apartment == Apartment:
                 listpackage.append(package)
+
+        print(listpackage)
         return listpackage
 
     def getPackage(self, packageid: str) -> DescriptionPackage:
@@ -58,11 +64,11 @@ class PackageManager:
         mydb = mysql.connector.connect(user=DATABASE_USER, database=DATABASE_NAME)
         cursor = mydb.cursor()
         for package in self.infoList:
-            print(package.id + " " + packageid)
             if package.id == packageid:
                 self.infoList.remove(package)
                 del_package = "DELETE FROM packages WHERE id=%s"
                 cursor.execute(del_package, [packageid])
         mydb.commit()
+        logging.info(f'The package {packageid} was deleted from the database.')
         cursor.close()
         mydb.close()
