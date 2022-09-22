@@ -1,11 +1,6 @@
 import unittest
 from BuildingManager import ApartmentInfo, BuildingManager
 
-#TODO: respecta formatul cu #GIVE/WHEN/THEN. Pune commenturi
-#TODO: nu iti pune numarul de telefon real in test
-#TODO: adauga test pentru Package Manager. Nu e ok sa testezi adaugarea in baza de date asa ca
-#      mysql trebuie sa fie facut mock. Testezi doar ca se adauga/sterge corect in lista interna.
-
 class BuildingManagerTest(unittest.TestCase):
     def test_no_building(self):
         # GIVEN
